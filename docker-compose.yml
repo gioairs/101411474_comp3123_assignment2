@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000" 
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/comp3123_assignment2
+      - JWT_SECRET=giolavilla
+      - PORT=5000
+    env_file:
+      - ./backend/.env 
+    networks:
+      - app-network
+
+  mongodb:
+    image: mongo
+    ports:
+      - "27018:27017" 
+    volumes:
+      - mongo_data:/data/db 
+    networks:
+      - app-network
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+volumes:
+  mongo_data: 
+
+networks:
+  app-network:
+    driver: bridge
+
+
